@@ -1,0 +1,35 @@
+{
+  "name": "web-worker",
+  "version": "0.1.0",
+  "description": "Consistent Web Workers in browser and Node.",
+  "main": "dist/node.js",
+  "browser": "dist/browser.js",
+  "exports": {
+    ".": {
+      "module": "dist/node.module.js",
+      "node": "dist/node.js",
+      "require": "dist/node.js"
+    }
+  },
+  "scripts": {
+    "prepare": "microbundle -f cjs,esm node.js browser.js",
+    "test": "eslint"
+  },
+  "repository": "developit/node-web-worker",
+  "keywords": [
+    "worker",
+    "worker_threads",
+    "webworker",
+    "web worker",
+    "web-worker",
+    "threads"
+  ],
+  "authors": [],
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/developit/node-web-worker",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-developit": "^1.1.1",
+    "microbundle": "^0.11.0"
+  }
+}
