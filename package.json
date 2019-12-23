@@ -6,14 +6,20 @@
   "browser": "dist/browser.js",
   "exports": {
     ".": {
-      "module": "dist/node.module.js",
+      "module": "node.js",
       "node": "dist/node.js",
       "require": "dist/node.js"
     }
   },
   "scripts": {
-    "prepare": "microbundle -f cjs,esm node.js browser.js",
+    "prepare": "babel node.js browser.js -d dist",
     "test": "eslint"
+  },
+  "babel": {
+    "plugins": [
+      "@babel/plugin-syntax-dynamic-import",
+      "./babel-plugin.js"
+    ]
   },
   "repository": "developit/node-web-worker",
   "keywords": [
@@ -27,9 +33,16 @@
   "authors": [],
   "license": "Apache-2.0",
   "homepage": "https://github.com/developit/node-web-worker",
+  "eslintConfig": {
+    "extends": "developit"
+  },
   "devDependencies": {
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/plugin-syntax-dynamic-import": "^7.7.4",
+    "@babel/plugin-transform-modules-commonjs": "^7.7.5",
+    "@babel/preset-env": "^7.7.7",
     "eslint": "^6.8.0",
-    "eslint-config-developit": "^1.1.1",
-    "microbundle": "^0.11.0"
+    "eslint-config-developit": "^1.1.1"
   }
 }
