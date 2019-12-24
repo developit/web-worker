@@ -2,18 +2,24 @@
   "name": "web-worker",
   "version": "0.1.0",
   "description": "Consistent Web Workers in browser and Node.",
-  "main": "dist/node.js",
-  "browser": "dist/browser.js",
+  "main": "cjs/node.js",
+  "browser": "cjs/browser.js",
   "exports": {
     ".": {
       "module": "node.js",
-      "node": "dist/node.js",
-      "require": "dist/node.js"
+      "node": "cjs/node.js",
+      "require": "cjs/node.js"
     }
   },
+  "files": [
+    "cjs",
+    "browser.js",
+    "node.js"
+  ],
   "scripts": {
-    "prepare": "babel node.js browser.js -d dist",
-    "test": "eslint"
+    "prepare": "babel node.js browser.js -d cjs",
+    "x-test": "eslint '*.js' test && node test/index.test.js",
+    "test": "eslint '*.js' test && node --experimental-modules ./node_modules/.bin/ava"
   },
   "babel": {
     "plugins": [
@@ -34,7 +40,10 @@
   "license": "Apache-2.0",
   "homepage": "https://github.com/developit/node-web-worker",
   "eslintConfig": {
-    "extends": "developit"
+    "extends": "developit",
+    "rules": {
+      "no-console": 0
+    }
   },
   "devDependencies": {
     "@babel/cli": "^7.7.7",
@@ -42,6 +51,7 @@
     "@babel/plugin-syntax-dynamic-import": "^7.7.4",
     "@babel/plugin-transform-modules-commonjs": "^7.7.5",
     "@babel/preset-env": "^7.7.7",
+    "ava": "^2.4.0",
     "eslint": "^6.8.0",
     "eslint-config-developit": "^1.1.1"
   }
