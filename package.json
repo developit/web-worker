@@ -2,14 +2,12 @@
   "name": "web-worker",
   "version": "0.1.0",
   "description": "Consistent Web Workers in browser and Node.",
-  "main": "cjs/node.js",
-  "browser": "cjs/browser.js",
+  "main": "./cjs/node.js",
+  "browser": "./cjs/browser.js",
   "exports": {
-    ".": {
-      "module": "node.js",
-      "node": "cjs/node.js",
-      "require": "cjs/node.js"
-    }
+    "browser": "./cjs/browser.js",
+    "node": "./cjs/node.js",
+    "default": "./cjs/node.js"
   },
   "files": [
     "cjs",
