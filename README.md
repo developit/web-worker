@@ -1,8 +1,21 @@
 # web-worker
 
-A web-compatible Worker implementation atop Node's [worker_threads](https://nodejs.org/api/worker_threads.html).
+Native cross-platform Web Workers. Works in published npm modules.
 
-**Features and differences from worker_threads:**
+```js
+import Worker from 'web-worker';
+
+const worker = new Worker('data:,postMessage("hello")');
+worker.onmessage = e => console.log(e.data);  // "hello"
+```
+
+**In Node**, it's a web-compatible Worker implementation atop Node's [worker_threads](https://nodejs.org/api/worker_threads.html).
+
+**In the browser** (and when bundled for the browser), it's simply an alias of `Worker`.
+
+### Features
+
+_Here's how this is different from worker_threads:_
 
 - makes Worker code compatible across browser and Node
 - uses DOM-style events (Event.data, Event.type, etc)
@@ -14,6 +27,41 @@ A web-compatible Worker implementation atop Node's [worker_threads](https://node
 ### Usage Example
 
 <table>
+<thead><tr><th><strong>main.js</strong></th><th><strong>worker.js</strong></th></tr></thead>
+<tbody><tr><td>
+
+```js
+import Worker from 'web-worker';
+
+const worker = new Worker('./worker.js');
+
+worker.addEventListener('message', e => {
+  console.log(e.data)  // "hiya!"
+});
+
+worker.postMessage('hello');
+```
+
+</td><td>
+
+```js
+addEventListener('message', e => {
+  if (e.data === 'hello') {
+    postMessage('hiya!');
+  }
+});
+```
+
+</td></tr></tbody>
+</table>
+
+
+### Module Workers
+
+Module Workers are supported in Node 12.8+ using this plugin, leveraging Node's native ES Modules support.
+In the browser, they can be used natively in Chrome 80+, or in all browsers via [worker-plugin] or [rollup-plugin-off-main-thread]. As with classic workers, there is no difference in usage between Node and the browser:
+
+<table>
 <thead><tr><th><strong>main.mjs</strong></th><th><strong>worker.mjs</strong></th></tr></thead>
 <tbody><tr><td>
 
@@ -21,29 +69,30 @@ A web-compatible Worker implementation atop Node's [worker_threads](https://node
 import Worker from 'web-worker';
 
 const worker = new Worker('./worker.mjs', {
-	type: 'module'
+  type: 'module'
 });
 worker.addEventListener('message', e => {
-  console.log(e.data)  // ['main.mjs', 'worker.mjs']
+  console.log(e.data)  // "200 OK"
 });
-worker.postMessage('ls');
+worker.postMessage('https://httpstat.us/200');
 ```
 
 </td><td>
 
 ```js
-import fs from 'fs';
+import fetch from 'isomorphic-fetch';
 
-addEventListener('message', e => {
-	if (e.data === 'ls') {
-		const ls = fs.readdirSync('.');
-		postMessage(ls);
-	}
+addEventListener('message', async e => {
+  const url = e.data;
+  const res = await fetch(url)
+  const text = await res.text();
+  postMessage(text);
 });
 ```
 
 </td></tr></tbody>
 </table>
+
 
 ### Data URLs
 
@@ -57,3 +106,14 @@ worker.addEventListener('message', e => {
   console.log(e.data)  // 42
 });
 ```
+
+### Special Thanks
+
+This module aims to provide a simple and forgettable piece of infrastructure,
+and as such it needed an obvious and descriptive name.
+[@calvinmetcalf](https://github.com/calvinmetcalf), who you may recognize as the author of [Lie](https://github.com/calvinmetcalf/lie) and other fine modules, gratiously offered up the name from his `web-worker` package.
+Thanks Calvin!
+
+
+[worker-plugin]: https://github.com/googlechromelabs/worker-plugin
+[rollup-plugin-off-main-thread]: https://github.com/surma/rollup-plugin-off-main-thread
