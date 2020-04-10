@@ -21,7 +21,7 @@
   "babel": {
     "plugins": [
       "@babel/plugin-syntax-dynamic-import",
-      "./babel-plugin.js"
+      "babel-plugin-commonjs-lite"
     ]
   },
   "repository": "developit/web-worker",
@@ -49,6 +49,7 @@
     "@babel/plugin-transform-modules-commonjs": "^7.7.5",
     "@babel/preset-env": "^7.7.7",
     "ava": "^2.4.0",
+    "babel-plugin-commonjs-lite": "gist:3e38560d5bed35da1fd708d635e4acb3",
     "eslint": "^6.8.0",
     "eslint-config-developit": "^1.1.1"
   }
