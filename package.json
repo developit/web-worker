@@ -24,7 +24,7 @@
       "./babel-plugin.js"
     ]
   },
-  "repository": "developit/node-web-worker",
+  "repository": "developit/web-worker",
   "keywords": [
     "worker",
     "worker_threads",
@@ -35,7 +35,7 @@
   ],
   "authors": [],
   "license": "Apache-2.0",
-  "homepage": "https://github.com/developit/node-web-worker",
+  "homepage": "https://github.com/developit/web-worker",
   "eslintConfig": {
     "extends": "developit",
     "rules": {
