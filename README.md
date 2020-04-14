@@ -55,7 +55,7 @@ addEventListener('message', e => {
 </td></tr></tbody>
 </table>
 
-The pattern `new URL('./worker.js', import.meta.url)` is used above to load the worker relative to the current module instead of the application base URL.
+The pattern `new URL('./worker.js', import.meta.url)` is used above to load the worker relative to the current module instead of the application base URL. Without this, Worker URLs are relative to a document's URL, which in Node.js is interpreted to be `process.cwd()`.
 
 Support for this pattern in build tools and test frameworks is still quite limited, but we are working on growing this support (tracking issue https://github.com/developit/web-worker/issues/4).
 
