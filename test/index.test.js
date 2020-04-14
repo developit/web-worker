@@ -35,7 +35,7 @@ test.after.always(t => {
 });
 
 test.serial('instantiation', async t => {
-	worker = createModuleWorker('./fixtures/worker.mjs');
+	worker = createModuleWorker('./test/fixtures/worker.mjs');
 	await sleep(500);
 	t.is(worker.events.length, 1, 'should have received a message event');
 	t.is(worker.events[0].data, 42);

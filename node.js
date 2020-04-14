@@ -72,6 +72,8 @@ function Event(type, target) {
 // thread boundary, but behaves differently in each context.
 export default threads.isMainThread ? mainThread() : workerThread();
 
+const baseUrl = process.cwd();
+
 function mainThread() {
 
 	/**
@@ -90,16 +92,15 @@ function mainThread() {
 		constructor(url, options) {
 			super();
 			const { name, type } = options || {};
-			// hack: grab the caller's filename from a stack trace
-			let relativeTo = process.cwd();
-			try {
-				relativeTo = Error().stack.split('\n')[2].match(/ \((.+):[^:]+:[^:]+\)$/)[1];
+			if (typeof url !== 'string') url = url.toString();
+			let mod;
+			if (/^data:/.test(url)) {
+				mod = url;
 			}
-			catch (e) {}
-			let mod = url;
-			if (!/^data:/.test(url)) {
-				mod = URL.fileURLToPath(new URL.URL(url, 'file://' + relativeTo));
+			else {
+				mod = URL.fileURLToPath(new URL.URL(url, URL.pathToFileURL(baseUrl + '/')));
 			}
+			console.log(mod);
 			const worker = new threads.Worker(
 				__filename,
 				{ workerData: { mod, name, type } }
