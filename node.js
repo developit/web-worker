@@ -72,7 +72,7 @@ function Event(type, target) {
 // thread boundary, but behaves differently in each context.
 export default threads.isMainThread ? mainThread() : workerThread();
 
-const baseUrl = process.cwd();
+const baseUrl = URL.pathToFileURL(process.cwd() + '/');
 
 function mainThread() {
 
@@ -98,9 +98,8 @@ function mainThread() {
 				mod = url;
 			}
 			else {
-				mod = URL.fileURLToPath(new URL.URL(url, URL.pathToFileURL(baseUrl + '/')));
+				mod = URL.fileURLToPath(new URL.URL(url, baseUrl));
 			}
-			console.log(mod);
 			const worker = new threads.Worker(
 				__filename,
 				{ workerData: { mod, name, type } }
