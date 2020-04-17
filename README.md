@@ -18,11 +18,11 @@ worker.onmessage = e => console.log(e.data);  // "hello"
 _Here's how this is different from worker_threads:_
 
 - makes Worker code compatible across browser and Node
-- uses DOM-style events (Event.data, Event.type, etc)
+- supports Module Workers (`{type:'module'}`) natively in Node 12.8+
+- uses DOM-style events (`Event.data`, `Event.type`, etc)
 - supports event handler properties (`worker.onmessage=..`)
-- `Worker()` constructor accepts a module URL
-- Supports the `{ type: 'module' }` option natively in Node 12.8+
-- emulates browser-style WorkerGlobalScope within the worker
+- `Worker()` accepts a module URL, Blob URL or Data URL
+- emulates browser-style [WorkerGlobalScope] within the worker
 
 ### Usage Example
 
@@ -33,7 +33,9 @@ _Here's how this is different from worker_threads:_
 ```js
 import Worker from 'web-worker';
 
-const worker = new Worker(new URL('./worker.js', import.meta.url));
+const worker = new Worker(
+  new URL('./worker.js', import.meta.url)
+);
 
 worker.addEventListener('message', e => {
   console.log(e.data)  // "hiya!"
@@ -42,7 +44,7 @@ worker.addEventListener('message', e => {
 worker.postMessage('hello');
 ```
 
-</td><td>
+</td><td valign="top">
 
 ```js
 addEventListener('message', e => {
@@ -55,9 +57,9 @@ addEventListener('message', e => {
 </td></tr></tbody>
 </table>
 
-The pattern `new URL('./worker.js', import.meta.url)` is used above to load the worker relative to the current module instead of the application base URL. Without this, Worker URLs are relative to a document's URL, which in Node.js is interpreted to be `process.cwd()`.
+👉 Notice how `new URL('./worker.js', import.meta.url)` is used above to load the worker relative to the current module instead of the application base URL. Without this, Worker URLs are relative to a document's URL, which in Node.js is interpreted to be `process.cwd()`.
 
-Support for this pattern in build tools and test frameworks is still quite limited, but we are working on growing this support (tracking issue https://github.com/developit/web-worker/issues/4).
+> _Support for this pattern in build tools and test frameworks is still limited. We are [working on growing this](https://github.com/developit/web-worker/issues/4)._
 
 ### Module Workers
 
@@ -71,16 +73,17 @@ In the browser, they can be used natively in Chrome 80+, or in all browsers via 
 ```js
 import Worker from 'web-worker';
 
-const worker = new Worker(new URL('./worker.mjs', import.meta.url), {
-  type: 'module'
-});
+const worker = new Worker(
+  new URL('./worker.mjs', import.meta.url),
+  { type: 'module' }
+);
 worker.addEventListener('message', e => {
   console.log(e.data)  // "200 OK"
 });
 worker.postMessage('https://httpstat.us/200');
 ```
 
-</td><td>
+</td><td valign="top">
 
 ```js
 import fetch from 'isomorphic-fetch';
@@ -120,3 +123,4 @@ Thanks Calvin!
 
 [worker-plugin]: https://github.com/googlechromelabs/worker-plugin
 [rollup-plugin-off-main-thread]: https://github.com/surma/rollup-plugin-off-main-thread
+[WorkerGlobalScope]: https://developer.mozilla.org/en-US/docs/Web/API/WorkerGlobalScope
