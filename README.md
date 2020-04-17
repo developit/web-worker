@@ -2,12 +2,7 @@
 
 Native cross-platform Web Workers. Works in published npm modules.
 
-```js
-import Worker from 'web-worker';
-
-const worker = new Worker('data:,postMessage("hello")');
-worker.onmessage = e => console.log(e.data);  // "hello"
-```
+<img src="https://user-images.githubusercontent.com/105127/79602228-1998bf00-80b8-11ea-91e4-26b212aabaa2.png">
 
 **In Node**, it's a web-compatible Worker implementation atop Node's [worker_threads](https://nodejs.org/api/worker_threads.html).
 
@@ -25,6 +20,15 @@ _Here's how this is different from worker_threads:_
 - emulates browser-style [WorkerGlobalScope] within the worker
 
 ### Usage Example
+
+In its simplest form:
+
+```js
+import Worker from 'web-worker';
+
+const worker = new Worker('data:,postMessage("hello")');
+worker.onmessage = e => console.log(e.data);  // "hello"
+```
 
 <table>
 <thead><tr><th><strong>main.js</strong></th><th><strong>worker.js</strong></th></tr></thead>
