@@ -92,7 +92,7 @@ function mainThread() {
 		constructor(url, options) {
 			super();
 			const { name, type } = options || {};
-			if (typeof url !== 'string') url = url.toString();
+			url += '';
 			let mod;
 			if (/^data:/.test(url)) {
 				mod = url;
