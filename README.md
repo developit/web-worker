@@ -33,9 +33,8 @@ _Here's how this is different from worker_threads:_
 ```js
 import Worker from 'web-worker';
 
-const worker = new Worker(
-  new URL('./worker.js', import.meta.url)
-);
+const url = new URL('./worker.js', import.meta.url);
+const worker = new Worker(url);
 
 worker.addEventListener('message', e => {
   console.log(e.data)  // "hiya!"
