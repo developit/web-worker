@@ -9,6 +9,7 @@
     "node": "./cjs/node.js",
     "default": "./cjs/node.js"
   },
+  "types": "index.d.ts",
   "files": [
     "cjs",
     "browser.js",
