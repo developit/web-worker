@@ -1,8 +1,13 @@
-# web-worker
-
-Native cross-platform Web Workers. Works in published npm modules.
-
-<img src="https://user-images.githubusercontent.com/105127/79602228-1998bf00-80b8-11ea-91e4-26b212aabaa2.png">
+<h1 align="center">
+  web-worker
+  <a href="https://www.npmjs.org/package/web-worker"><img src="https://img.shields.io/npm/v/web-worker.svg?style=flat-square" alt="npm"></a>
+</h1>
+<p align="center">
+  Native cross-platform Web Workers. Works in published npm modules.
+</p>
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/105127/79602228-1998bf00-80b8-11ea-91e4-26b212aabaa2.png" width="1000" alt="">
+</p>
 
 **In Node**, it's a web-compatible Worker implementation atop Node's [worker_threads](https://nodejs.org/api/worker_threads.html).
 
