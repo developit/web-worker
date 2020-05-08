@@ -15,6 +15,7 @@
  */
 
 import URL from 'url';
+import fs from 'fs';
 import VM from 'vm';
 import threads from 'worker_threads';
 
@@ -187,7 +188,7 @@ function workerThread() {
 				evaluateDataUrl(mod, name);
 			}
 			else {
-				require(mod);
+				importScripts(mod);
 			}
 		}
 		catch (err) {
@@ -215,4 +216,11 @@ function parseDataUrl(url) {
 			throw Error('Unknown Data URL encoding "' + encoding + '"');
 	}
 	return { type, data };
+}
+
+function importScripts(...fileNames) {
+	for (let i=0; i < fileNames.length; i++) {
+		const url = fileNames[i];
+		VM.runInThisContext(fs.readFileSync(url,'utf-8'),{ filename: url });
+	}
 }
