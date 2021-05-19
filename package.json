@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "prepare": "babel node.js browser.js -d cjs",
-    "test": "eslint '*.js' test && node --experimental-modules ./node_modules/.bin/ava"
+    "test": "ava && eslint '*.js' test"
   },
   "babel": {
     "plugins": [
@@ -49,9 +49,9 @@
     "@babel/plugin-syntax-dynamic-import": "^7.7.4",
     "@babel/plugin-transform-modules-commonjs": "^7.7.5",
     "@babel/preset-env": "^7.7.7",
-    "ava": "^2.4.0",
+    "ava": "^3.15.0",
     "babel-plugin-commonjs-lite": "gist:3e38560d5bed35da1fd708d635e4acb3",
-    "eslint": "^6.8.0",
+    "eslint": "^7.26.0",
     "eslint-config-developit": "^1.1.1"
   }
 }
