@@ -26,7 +26,7 @@ function createModuleWorker(url) {
 	return worker;
 }
 
-function createPlainWorker(url) {
+function createWorker(url) {
 	const worker = new Worker(url);
 	worker.events = [];
 	worker.addEventListener('message', e => {
@@ -53,7 +53,6 @@ async function testPostMessage(t, worker) {
 
 	await sleep(500);
 
-	// TODO Why 2? This seems like a deviation from the spec
 	t.is(worker.events.length, 2, 'should have received two message responses');
 	
 	const first = worker.events[0];
@@ -97,8 +96,29 @@ test('es module with data protocol path', async t => {
 	worker.terminate();
 });
 
+test('commonjs with relative path', async t => {
+	const worker = createWorker('./test/fixtures/worker.cjs');
+
+	await testInstantiation(t, worker);
+	await testPostMessage(t, worker);
+
+	worker.terminate();
+});
+
+test('commonjs module with file protocol path', async t => {
+	const worker = createWorker(new URL('./fixtures/worker.cjs', import.meta.url));
+
+	await testInstantiation(t, worker);
+	await testPostMessage(t, worker);
+
+	worker.terminate();
+});
+
+// Scenario not currently supported
+test.todo('commonjs module with data protocol path');
+
 test('no module with relative path', async t => {
-	const worker = createPlainWorker('./test/fixtures/worker.js');
+	const worker = createWorker('./test/fixtures/worker.js');
 
 	await testInstantiation(t, worker);
 	await testPostMessage(t, worker);
@@ -107,7 +127,7 @@ test('no module with relative path', async t => {
 });
 
 test('no module with file protocol path', async t => {
-	const worker = createPlainWorker(new URL('./fixtures/worker.js', import.meta.url));
+	const worker = createWorker(new URL('./fixtures/worker.js', import.meta.url));
 
 	await testInstantiation(t, worker);
 	await testPostMessage(t, worker);
@@ -115,8 +135,22 @@ test('no module with file protocol path', async t => {
 	worker.terminate();
 });
 
-test.todo('no module with data protocol path');
+test('no module with data protocol path', async t => {
+	const code = `postMessage(42);
 
-test.todo('common js module');
+	self.onmessage = e => {
+		postMessage(['received onmessage', e.timeStamp, e.data]);
+	};
+	
+	addEventListener('message', e => {
+		postMessage(['received message event', e.timeStamp, e.data]);
+	});`;
+	const worker = createModuleWorker('data:text/javascript,' + encodeURIComponent(code));
+
+	await testInstantiation(t, worker);
+	await testPostMessage(t, worker);
+
+	worker.terminate();
+});
 
 test.todo('web-worker inside worker context');
