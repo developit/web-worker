@@ -26,6 +26,15 @@ function createModuleWorker(url) {
 	return worker;
 }
 
+function createPlainWorker(url) {
+	const worker = new Worker(url);
+	worker.events = [];
+	worker.addEventListener('message', e => {
+		worker.events.push(e);
+	});
+	return worker;
+}
+
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 async function testInstantiation(t, worker) {
@@ -44,7 +53,7 @@ async function testPostMessage(t, worker) {
 
 	await sleep(500);
 
-	// TODO Why 2?
+	// TODO Why 2? This seems like a deviation from the spec
 	t.is(worker.events.length, 2, 'should have received two message responses');
 	
 	const first = worker.events[0];
@@ -60,7 +69,7 @@ async function testPostMessage(t, worker) {
 	t.not(second.data[2], msg);
 }
 
-test('relative path', async t => {
+test('es module with relative path', async t => {
 	const worker = createModuleWorker('./test/fixtures/worker.mjs');
 
 	await testInstantiation(t, worker);
@@ -69,7 +78,7 @@ test('relative path', async t => {
 	worker.terminate();
 });
 
-test('file protocol path', async t => {
+test('es module with file protocol path', async t => {
 	const worker = createModuleWorker(new URL('./fixtures/worker.mjs', import.meta.url));
 
 	await testInstantiation(t, worker);
@@ -78,7 +87,7 @@ test('file protocol path', async t => {
 	worker.terminate();
 });
 
-test('data protocol path', async t => {
+test('es module with data protocol path', async t => {
 	const code = `import '${new URL('./fixtures/worker.mjs', import.meta.url)}';`;
 	const worker = createModuleWorker('data:text/javascript,' + encodeURIComponent(code));
 
@@ -88,6 +97,24 @@ test('data protocol path', async t => {
 	worker.terminate();
 });
 
-test.todo('web-worker inside worker context');
+test('no module with relative path', async t => {
+	const worker = createPlainWorker('./test/fixtures/worker.js');
 
-test.todo('web-worker without es modules')
+	await testInstantiation(t, worker);
+	await testPostMessage(t, worker);
+
+	worker.terminate();
+});
+
+test('no module with file protocol path', async t => {
+	const worker = createPlainWorker(new URL('./fixtures/worker.js', import.meta.url));
+
+	await testInstantiation(t, worker);
+	await testPostMessage(t, worker);
+
+	worker.terminate();
+});
+
+test.todo('no module with data protocol path');
+
+test.todo('web-worker inside worker context');
