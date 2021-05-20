@@ -88,7 +88,7 @@ test('es module with file protocol path', async t => {
 
 test('es module with data protocol path', async t => {
 	const code = `import '${new URL('./fixtures/worker.mjs', import.meta.url)}';`;
-	const worker = createModuleWorker('data:text/javascript,' + encodeURIComponent(code));
+	const worker = createModuleWorker('data:text/javascript;base64,' + Buffer.from(code).toString('base64'));
 
 	await testInstantiation(t, worker);
 	await testPostMessage(t, worker);
@@ -146,7 +146,7 @@ test('no module with data protocol path', async t => {
 	addEventListener('message', e => {
 		postMessage(['received message event', e.timeStamp, e.data]);
 	});`;
-	const worker = createModuleWorker('data:text/javascript,' + encodeURIComponent(code));
+	const worker = createModuleWorker('data:text/javascript;base64,' + Buffer.from(code).toString('base64'));
 
 	await testInstantiation(t, worker);
 	await testPostMessage(t, worker);
