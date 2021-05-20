@@ -117,4 +117,6 @@ test('no module with file protocol path', async t => {
 
 test.todo('no module with data protocol path');
 
+test.todo('common js module');
+
 test.todo('web-worker inside worker context');
