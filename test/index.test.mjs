@@ -154,9 +154,7 @@ test('no module with data protocol path', async t => {
 	worker.terminate();
 });
 
-// See https://github.com/developit/web-worker/issues/12
-
-test.failing('es module web worker in a web worker', async t => {
+test('es module web worker in a web worker', async t => {
 	const worker = createModuleWorker(new URL('./fixtures/worker-making-worker.mjs', import.meta.url));
 
 	await testInstantiation(t, worker);
@@ -165,7 +163,7 @@ test.failing('es module web worker in a web worker', async t => {
 	worker.terminate();
 });
 
-test.failing('commonjs web worker in a web worker', async t => {
+test('commonjs web worker in a web worker', async t => {
 	const worker = createWorker(new URL('./fixtures/worker-making-worker.cjs', import.meta.url));
 
 	await testInstantiation(t, worker);

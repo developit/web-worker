@@ -68,67 +68,65 @@ function Event(type, target) {
 	this.target = this.currentTarget = this.data = null;
 }
 
-// this module is used self-referentially on both sides of the
-// thread boundary, but behaves differently in each context.
-export default threads.isMainThread ? mainThread() : workerThread();
-
 const baseUrl = URL.pathToFileURL(process.cwd() + '/');
 
-function mainThread() {
-
-	/**
-	 * A web-compatible Worker implementation atop Node's worker_threads.
-	 *  - uses DOM-style events (Event.data, Event.type, etc)
-	 *  - supports event handler properties (worker.onmessage)
-	 *  - Worker() constructor accepts a module URL
-	 *  - accepts the {type:'module'} option
-	 *  - emulates WorkerGlobalScope within the worker
-	 * @param {string} url  The URL or module specifier to load
-	 * @param {object} [options]  Worker construction options
-	 * @param {string} [options.name]  Available as `self.name` within the Worker
-	 * @param {string} [options.type="classic"]  Pass "module" to create a Module Worker.
-	 */
-	class Worker extends EventTarget {
-		constructor(url, options) {
-			super();
-			const { name, type } = options || {};
-			url += '';
-			let mod;
-			if (/^data:/.test(url) || (type === 'module' && /^file:/.test(url))) {
-				mod = url;
-			}
-			else {
-				mod = URL.fileURLToPath(new URL.URL(url, baseUrl));
-			}
-			const worker = new threads.Worker(
-				__filename,
-				{ workerData: { mod, name, type } }
-			);
-			Object.defineProperty(this, WORKER, {
-				value: worker
-			});
-			worker.on('message', data => {
-				const event = new Event('message');
-				event.data = data;
-				this.dispatchEvent(event);
-			});
-			worker.on('error', error => {
-				error.type = 'error';
-				this.dispatchEvent(error);
-			});
-			worker.on('exit', () => {
-				this.dispatchEvent(new Event('close'));
-			});
+/**
+ * A web-compatible Worker implementation atop Node's worker_threads.
+ *  - uses DOM-style events (Event.data, Event.type, etc)
+ *  - supports event handler properties (worker.onmessage)
+ *  - Worker() constructor accepts a module URL
+ *  - accepts the {type:'module'} option
+ *  - emulates WorkerGlobalScope within the worker
+ * @param {string} url  The URL or module specifier to load
+ * @param {object} [options]  Worker construction options
+ * @param {string} [options.name]  Available as `self.name` within the Worker
+ * @param {string} [options.type="classic"]  Pass "module" to create a Module Worker.
+ */
+class Worker extends EventTarget {
+	constructor(url, options) {
+		super();
+		const { name, type } = options || {};
+		url += '';
+		let mod;
+		if (/^data:/.test(url) || (type === 'module' && /^file:/.test(url))) {
+			mod = url;
 		}
-		postMessage(data, transferList) {
-			this[WORKER].postMessage(data, transferList);
+		else {
+			mod = URL.fileURLToPath(new URL.URL(url, baseUrl));
 		}
-		terminate() {
-			this[WORKER].terminate();
-		}
+		const worker = new threads.Worker(
+			__filename,
+			{ workerData: { mod, name, type } }
+		);
+		Object.defineProperty(this, WORKER, {
+			value: worker
+		});
+		worker.on('message', data => {
+			const event = new Event('message');
+			event.data = data;
+			this.dispatchEvent(event);
+		});
+		worker.on('error', error => {
+			error.type = 'error';
+			this.dispatchEvent(error);
+		});
+		worker.on('exit', () => {
+			this.dispatchEvent(new Event('close'));
+		});
 	}
-	Worker.prototype.onmessage = Worker.prototype.onerror = Worker.prototype.onclose = null;
-	return Worker;
+	postMessage(data, transferList) {
+		this[WORKER].postMessage(data, transferList);
+	}
+	terminate() {
+		this[WORKER].terminate();
+	}
+}
+Worker.prototype.onmessage = Worker.prototype.onerror = Worker.prototype.onclose = null;
+
+export default Worker;
+
+if (!threads.isMainThread) {
+	workerThread();
 }
 
 function workerThread() {
