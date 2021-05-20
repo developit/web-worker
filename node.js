@@ -94,7 +94,7 @@ function mainThread() {
 			const { name, type } = options || {};
 			url += '';
 			let mod;
-			if (/^data:/.test(url) || /^file:/.test(url)) {
+			if (/^data:/.test(url) || (type === 'module' && /^file:/.test(url))) {
 				mod = url;
 			}
 			else {
