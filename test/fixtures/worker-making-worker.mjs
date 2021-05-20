@@ -2,9 +2,9 @@ import Worker from 'web-worker';
 
 const worker = new Worker(new URL('./worker.mjs', import.meta.url), { type: 'module' });
 worker.addEventListener('message', e => {
-    postMessage(e.data);
+	postMessage(e.data);
 });
 
 addEventListener('message', e => {
-    worker.postMessage(e.data);
+	worker.postMessage(e.data);
 });

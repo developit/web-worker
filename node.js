@@ -91,8 +91,17 @@ class Worker extends EventTarget {
 		if (/^data:/.test(url) || (type === 'module' && /^file:/.test(url))) {
 			mod = url;
 		}
+		else if (type === 'module') {
+			mod = new URL.URL(url, baseUrl).toString();
+		}
 		else {
-			mod = URL.fileURLToPath(new URL.URL(url, baseUrl));
+			const path = require('path');
+			if (path.isAbsolute(url)) {
+				mod = url;
+			}
+			else {
+				mod = URL.fileURLToPath(new URL.URL(url, baseUrl));
+			}
 		}
 		const worker = new threads.Worker(
 			__filename,
