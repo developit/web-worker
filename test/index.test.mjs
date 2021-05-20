@@ -115,6 +115,7 @@ test('commonjs module with file protocol path', async t => {
 });
 
 // Scenario not currently supported
+// Support via module loader is plausible however
 test.todo('commonjs module with data protocol path');
 
 test('no module with relative path', async t => {
@@ -153,4 +154,22 @@ test('no module with data protocol path', async t => {
 	worker.terminate();
 });
 
-test.todo('web-worker inside worker context');
+// See https://github.com/developit/web-worker/issues/12
+
+test.failing('es module web worker in a web worker', async t => {
+	const worker = createModuleWorker(new URL('./fixtures/worker-making-worker.mjs', import.meta.url));
+
+	await testInstantiation(t, worker);
+	await testPostMessage(t, worker);
+
+	worker.terminate();
+});
+
+test.failing('commonjs web worker in a web worker', async t => {
+	const worker = createWorker(new URL('./fixtures/worker-making-worker.cjs', import.meta.url));
+
+	await testInstantiation(t, worker);
+	await testPostMessage(t, worker);
+
+	worker.terminate();
+});
