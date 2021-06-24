@@ -1,4 +1,2 @@
-type ConstructorOf<C> = { new (...args: any[]): C }
-
-declare const _default: ConstructorOf<Worker>
+declare const _default: { new (...args: ConstructorParameters<typeof Worker>): Worker }
 export default _default
