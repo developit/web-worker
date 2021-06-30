@@ -23,5 +23,4 @@ jobs:
         npm run prepare --if-present
         npm test
       env:
-        GIT_SSL_NO_VERIFY: true
         CI: true
