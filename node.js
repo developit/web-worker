@@ -205,8 +205,10 @@ function workerThread() {
 }
 
 function evaluateDataUrl(url, name) {
+	const { createRequire } = require('module');
+	const dataUrlRequire = createRequire(process.cwd());
 	const { data } = parseDataUrl(url);
-	return VM.runInThisContext(data, {
+	VM.runInNewContext(data, { ...global, require: dataUrlRequire }, {
 		filename: 'worker.<'+(name || 'data:')+'>'
 	});
 }

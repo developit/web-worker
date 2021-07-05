@@ -114,9 +114,19 @@ test('commonjs module with file protocol path', async t => {
 	worker.terminate();
 });
 
-// Scenario not currently supported
-// Support via module loader is plausible however
-test.todo('commonjs module with data protocol path');
+test('commonjs module with data protocol path', async t => {
+	const { fileURLToPath } = await import('url');
+	const workerFileUrl = new URL('./fixtures/worker.cjs', import.meta.url).toString();
+	const workerFilePath = fileURLToPath(workerFileUrl).replace(/\\/g, '/');
+
+	const code = `require('${workerFilePath}');`;
+	const worker = createWorker('data:text/javascript;base64,' + Buffer.from(code).toString('base64'));
+
+	await testInstantiation(t, worker);
+	await testPostMessage(t, worker);
+
+	worker.terminate();
+});
 
 test('no module with relative path', async t => {
 	const worker = createWorker('./test/fixtures/worker.js');
