@@ -16,7 +16,7 @@
     "node.js"
   ],
   "scripts": {
-    "prepare": "babel node.js browser.js -d cjs",
+    "prepare": "babel src/node.js src/browser.js -d cjs",
     "test": "ava && eslint \"*.js\" \"test/**\""
   },
   "babel": {
