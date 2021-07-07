@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "prepare": "babel src/node.js src/browser.js -d cjs",
-    "test": "ava && eslint \"*.js\" \"test/**\""
+    "test": "ava && eslint \"src/*.js\" \"test/**\""
   },
   "babel": {
     "plugins": [
