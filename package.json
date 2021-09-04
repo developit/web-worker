@@ -13,7 +13,8 @@
   "files": [
     "cjs",
     "browser.js",
-    "node.js"
+    "node.js",
+    "index.d.ts"
   ],
   "scripts": {
     "prepare": "babel src/node.js src/browser.js -d cjs",
