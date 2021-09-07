@@ -68,9 +68,16 @@ function Event(type, target) {
 	this.target = this.currentTarget = this.data = null;
 }
 
+const Worker = mainThread();
+global.Worker = Worker;
+
 // this module is used self-referentially on both sides of the
 // thread boundary, but behaves differently in each context.
-export default threads.isMainThread ? mainThread() : workerThread();
+if (!threads.isMainThread) {
+	workerThread();
+}
+
+export default Worker;
 
 const baseUrl = URL.pathToFileURL(process.cwd() + '/');
 
