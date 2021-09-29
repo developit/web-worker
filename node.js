@@ -159,6 +159,10 @@ function workerThread() {
 		postMessage(data, transferList) {
 			threads.parentPort.postMessage(data, transferList);
 		}
+		// Emulates https://developer.mozilla.org/en-US/docs/Web/API/DedicatedWorkerGlobalScope/close
+		close() {
+			process.exit();
+		}
 	}
 	let proto = Object.getPrototypeOf(global);
 	delete proto.constructor;

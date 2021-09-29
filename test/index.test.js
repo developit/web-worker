@@ -65,3 +65,14 @@ test.serial('postMessage', async t => {
 	t.deepEqual(second.data[2], msg);
 	t.not(second.data[2], msg);
 });
+
+test.serial('close', async t => {
+	const worker = new Worker('./test/fixtures/close.mjs', { type: 'module' });
+	let closed = false;
+	// Not emitted in the browser, just for testing
+	worker.addEventListener('close', e => {
+		closed = true;
+	});
+	await sleep(500);
+	t.is(closed, true, 'should have closed itself');
+});
