@@ -20,6 +20,7 @@ import threads from 'worker_threads';
 
 const WORKER = Symbol.for('worker');
 const EVENTS = Symbol.for('events');
+const PACKAGE_IDENTITY = 'web-worker';
 
 class EventTarget {
 	constructor() {
@@ -105,7 +106,7 @@ class Worker extends EventTarget {
 		}
 		const worker = new threads.Worker(
 			__filename,
-			{ workerData: { mod, name, type } }
+			{ workerData: { mod, name, type, id: PACKAGE_IDENTITY } }
 		);
 		Object.defineProperty(this, WORKER, {
 			value: worker
@@ -134,7 +135,8 @@ Worker.prototype.onmessage = Worker.prototype.onerror = Worker.prototype.onclose
 
 export default Worker;
 
-if (!threads.isMainThread) {
+// Determine if within worker managed by this library
+if (threads.workerData.id === PACKAGE_IDENTITY && threads.workerData.mod) {
 	workerThread();
 }
 
