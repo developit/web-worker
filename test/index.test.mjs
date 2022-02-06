@@ -181,3 +181,13 @@ test('commonjs web worker in a web worker', async t => {
 
 	worker.terminate();
 });
+
+test.serial('close', async t => {
+	const worker = new Worker('./test/fixtures/close.mjs', { type: 'module' });
+	// Not emitted in the browser, just for testing
+	const closed = await new Promise((resolve, reject) => {
+		worker.addEventListener('close', () => resolve(true));
+		setTimeout(reject, 500);
+	});
+	t.is(closed, true, 'should have closed itself');
+});
