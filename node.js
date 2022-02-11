@@ -211,6 +211,7 @@ function evaluateDataUrl(url, name) {
 function parseDataUrl(url) {
 	let [m, type, encoding, data] = url.match(/^data: *([^;,]*)(?: *; *([^,]*))? *,(.*)$/) || [];
 	if (!m) throw Error('Invalid Data URL.');
+	data = decodeURIComponent(data);
 	if (encoding) switch (encoding.toLowerCase()) {
 		case 'base64':
 			data = Buffer.from(data, 'base64').toString();
