@@ -137,7 +137,7 @@ export default Worker;
 
 // Determine if within worker managed by this library
 const workerData = threads.workerData;
-if (typeof workerData === 'object' && workerData.id === PACKAGE_IDENTITY && workerData.mod) {
+if (workerData && typeof workerData === 'object' && workerData.id === PACKAGE_IDENTITY && workerData.mod) {
 	workerThread();
 }
 
