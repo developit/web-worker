@@ -136,7 +136,8 @@ Worker.prototype.onmessage = Worker.prototype.onerror = Worker.prototype.onclose
 export default Worker;
 
 // Determine if within worker managed by this library
-if (threads.workerData.id === PACKAGE_IDENTITY && threads.workerData.mod) {
+const workerData = threads.workerData;
+if (typeof workerData === 'object' && workerData.id === PACKAGE_IDENTITY && workerData.mod) {
 	workerThread();
 }
 
