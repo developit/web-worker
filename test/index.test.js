@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 import test from 'ava';
 import Worker from '..';
 
