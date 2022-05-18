@@ -7,7 +7,8 @@
   "exports": {
     "browser": "./cjs/browser.js",
     "node": "./cjs/node.js",
-    "default": "./cjs/node.js"
+    "default": "./cjs/node.js",
+    "types": "./index.d.ts"
   },
   "types": "index.d.ts",
   "files": [
