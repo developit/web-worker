@@ -17,6 +17,10 @@
 import URL from 'url';
 import VM from 'vm';
 import threads from 'worker_threads';
+import {resolveObjectURL} from 'node:buffer'
+
+const isDataUrl = s => /^data:/.test(s);
+const isBlobUrl = s => /^blob:/.test(s);
 
 const WORKER = Symbol.for('worker');
 const EVENTS = Symbol.for('events');
@@ -93,16 +97,20 @@ function mainThread() {
 			super();
 			const { name, type } = options || {};
 			url += '';
-			let mod;
-			if (/^data:/.test(url)) {
+			let mod, blobUrl;
+			if (isDataUrl(url)) {
 				mod = url;
+			}
+			else if (isBlobUrl(url)) {
+				mod = url;
+				blobUrl = resolveObjectURL(url);
 			}
 			else {
 				mod = URL.fileURLToPath(new URL.URL(url, baseUrl));
 			}
 			const worker = new threads.Worker(
 				__filename,
-				{ workerData: { mod, name, type } }
+				{ workerData: { mod, name, type, blobUrl } }
 			);
 			Object.defineProperty(this, WORKER, {
 				value: worker
@@ -131,8 +139,8 @@ function mainThread() {
 	return Worker;
 }
 
-function workerThread() {
-	let { mod, name, type } = threads.workerData;
+async function workerThread() {
+	let { mod, name, type, blobUrl } = threads.workerData;
 
 	// turn global into a mock WorkerGlobalScope
 	const self = global.self = global;
@@ -173,11 +181,10 @@ function workerThread() {
 	});
 	global.name = name;
 
-	const isDataUrl = /^data:/.test(mod);
 	if (type === 'module') {
 		import(mod)
 			.catch(err => {
-				if (isDataUrl && err.message === 'Not supported') {
+				if ((isDataUrl(mod) || blobUrl) && err.message === 'Not supported') {
 					console.warn('Worker(): Importing data: URLs requires Node 12.10+. Falling back to classic worker.');
 					return evaluateDataUrl(mod, name);
 				}
@@ -187,8 +194,8 @@ function workerThread() {
 	}
 	else {
 		try {
-			if (/^data:/.test(mod)) {
-				evaluateDataUrl(mod, name);
+			if (isDataUrl(mod) || blobUrl) {
+				await evaluateDataUrl(mod, name, blobUrl);
 			}
 			else {
 				require(mod);
@@ -201,14 +208,21 @@ function workerThread() {
 	}
 }
 
-function evaluateDataUrl(url, name) {
-	const { data } = parseDataUrl(url);
+async function evaluateDataUrl(url, name, blobUrl) {
+	const { data } = await parseDataUrl(url, blobUrl);
 	return VM.runInThisContext(data, {
 		filename: 'worker.<'+(name || 'data:')+'>'
 	});
 }
 
-function parseDataUrl(url) {
+async function parseDataUrl(url, blobUrl) {
+	if (blobUrl) {
+		return {
+			type: blobUrl.type,
+			data: await blobUrl.text()
+		}
+	}
+
 	let [m, type, encoding, data] = url.match(/^data: *([^;,]*)(?: *; *([^,]*))? *,(.*)$/) || [];
 	if (!m) throw Error('Invalid Data URL.');
 	if (encoding) switch (encoding.toLowerCase()) {
