@@ -17,7 +17,7 @@
 import URL from 'url';
 import VM from 'vm';
 import threads from 'worker_threads';
-import {resolveObjectURL} from 'node:buffer'
+import { resolveObjectURL } from 'node:buffer';
 
 const isDataUrl = s => /^data:/.test(s);
 const isBlobUrl = s => /^blob:/.test(s);
@@ -220,7 +220,7 @@ async function parseDataUrl(url, blobUrl) {
 		return {
 			type: blobUrl.type,
 			data: await blobUrl.text()
-		}
+		};
 	}
 
 	let [m, type, encoding, data] = url.match(/^data: *([^;,]*)(?: *; *([^,]*))? *,(.*)$/) || [];
