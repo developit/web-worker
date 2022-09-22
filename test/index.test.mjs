@@ -35,10 +35,19 @@ function createWorker(url) {
 	return worker;
 }
 
-const sleep = ms => new Promise(r => setTimeout(r, ms));
+function waitForMessageEvents(worker, target = 1) {
+	let count = 0;
+	return new Promise(r => worker.addEventListener('message', function onMessage() {
+		count++;
+		if (count >= target) {
+			worker.removeEventListener('message', onMessage);
+			r();
+		}
+	}));
+}
 
 async function testInstantiation(t, worker) {
-	await sleep(500);
+	await waitForMessageEvents(worker);
 	t.is(worker.events.length, 1, 'should have received a message event');
 	t.is(worker.events[0].data, 42);
 }
@@ -47,11 +56,12 @@ async function testPostMessage(t, worker) {
 	// reset events list
 	worker.events.length = 0;
 
+	const msgEvents = waitForMessageEvents(worker, 2);
 	const msg = { greeting: 'hello' };
 	worker.postMessage(msg);
 	const timestamp = Date.now();
 
-	await sleep(500);
+	await msgEvents;
 
 	t.is(worker.events.length, 2, 'should have received two message responses');
 	
