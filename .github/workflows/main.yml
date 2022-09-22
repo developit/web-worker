@@ -8,7 +8,7 @@ jobs:
     strategy:
      matrix:
        platform: [ubuntu-latest, windows-latest]
-       node: [12.x, 14.x, 16.x]
+       node: [12.x, 14.x, 16.x, 18.x]
 
     runs-on: ${{ matrix.platform }}
 
