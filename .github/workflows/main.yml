@@ -5,20 +5,21 @@ on: [push, pull_request]
 jobs:
   build:
 
-    runs-on: ubuntu-latest
-
     strategy:
      matrix:
-       node: [12.x, 13.x]
+       platform: [ubuntu-latest, windows-latest]
+       node: [12.x, 14.x, 16.x, 18.x]
+
+    runs-on: ${{ matrix.platform }}
 
     steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-node@v1
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node }}
     - name: npm install, build, and test
       run: |
-        npm install
+        npm ci
         npm run prepare --if-present
         npm test
       env:

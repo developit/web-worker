@@ -17,8 +17,8 @@
     "index.d.ts"
   ],
   "scripts": {
-    "prepare": "babel node.js browser.js -d cjs",
-    "test": "eslint '*.js' test && node --experimental-modules ./node_modules/.bin/ava"
+    "prepare": "babel src/node.js src/browser.js -d cjs",
+    "test": "ava && eslint \"src/*.js\" \"test/**\""
   },
   "babel": {
     "plugins": [
@@ -41,7 +41,9 @@
   "eslintConfig": {
     "extends": "developit",
     "rules": {
-      "no-console": 0
+      "no-console": 0,
+      "jest/expect-expect": 0,
+      "jest/no-test-callback": 0
     }
   },
   "devDependencies": {
@@ -50,9 +52,9 @@
     "@babel/plugin-syntax-dynamic-import": "^7.7.4",
     "@babel/plugin-transform-modules-commonjs": "^7.7.5",
     "@babel/preset-env": "^7.7.7",
-    "ava": "^2.4.0",
-    "babel-plugin-commonjs-lite": "gist:3e38560d5bed35da1fd708d635e4acb3",
-    "eslint": "^6.8.0",
+    "ava": "^4.0.1",
+    "babel-plugin-commonjs-lite": "^0.1.0",
+    "eslint": "^7.26.0",
     "eslint-config-developit": "^1.1.1"
   }
 }
