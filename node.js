@@ -175,7 +175,7 @@ function workerThread() {
 
 	const isDataUrl = /^data:/.test(mod);
 	if (type === 'module') {
-		import(mod)
+		import(URL.pathToFileURL(mod))
 			.catch(err => {
 				if (isDataUrl && err.message === 'Not supported') {
 					console.warn('Worker(): Importing data: URLs requires Node 12.10+. Falling back to classic worker.');
