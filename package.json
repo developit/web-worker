@@ -17,7 +17,7 @@
     "index.d.ts"
   ],
   "scripts": {
-    "prepare": "babel node.js browser.js -d cjs",
+    "prepare": "npx babel node.js browser.js -d cjs",
     "test": "eslint '*.js' test && node --experimental-modules ./node_modules/.bin/ava"
   },
   "babel": {
