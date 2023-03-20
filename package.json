@@ -2,22 +2,22 @@
   "name": "web-worker",
   "version": "1.2.0",
   "description": "Consistent Web Workers in browser and Node.",
-  "main": "./cjs/node.js",
+  "main": "./cjs/node-js.js",
   "browser": "./cjs/browser.js",
   "exports": {
     "browser": "./cjs/browser.js",
-    "node": "./cjs/node.js",
-    "default": "./cjs/node.js"
+    "node": "./cjs/node-js.js",
+    "default": "./cjs/node-js.js"
   },
   "types": "index.d.ts",
   "files": [
     "cjs",
     "browser.js",
-    "node.js",
+    "node-js.js",
     "index.d.ts"
   ],
   "scripts": {
-    "prepare": "babel node.js browser.js -d cjs",
+    "prepare": "babel node-js.js browser.js -d cjs",
     "test": "eslint '*.js' test && node --experimental-modules ./node_modules/.bin/ava"
   },
   "babel": {
