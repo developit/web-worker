@@ -4,13 +4,25 @@
   "description": "Consistent Web Workers in browser and Node.",
   "main": "./cjs/node.js",
   "browser": "./cjs/browser.js",
+  "types": "./index.d.ts",
   "exports": {
-    "bun": "./cjs/browser.js",
-    "browser": "./cjs/browser.js",
-    "node": "./cjs/node.js",
-    "default": "./cjs/node.js"
+    "types": "./index.d.ts",
+    "import": {
+      "bun": "./browser.js",
+      "browser": "./browser.js",
+      "default": "./node.js"
+    },
+    "module": {
+      "bun": "./browser.js",
+      "browser": "./browser.js",
+      "default": "./node.js"
+    },
+    "default": {
+      "bun": "./cjs/browser.js",
+      "browser": "./cjs/browser.js",
+      "default": "./cjs/node.js"
+    }
   },
-  "types": "index.d.ts",
   "files": [
     "cjs",
     "browser.js",
@@ -46,14 +58,14 @@
     }
   },
   "devDependencies": {
-    "@babel/cli": "^7.7.7",
-    "@babel/core": "^7.7.7",
-    "@babel/plugin-syntax-dynamic-import": "^7.7.4",
-    "@babel/plugin-transform-modules-commonjs": "^7.7.5",
-    "@babel/preset-env": "^7.7.7",
-    "ava": "^2.4.0",
+    "@babel/cli": "^7.23.4",
+    "@babel/core": "^7.23.7",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/plugin-transform-modules-commonjs": "^7.23.3",
+    "ava": "2.4",
     "babel-plugin-commonjs-lite": "gist:3e38560d5bed35da1fd708d635e4acb3",
-    "eslint": "^6.8.0",
-    "eslint-config-developit": "^1.1.1"
+    "eslint": "^7.32.0",
+    "eslint-config-developit": "^1.2.0",
+    "eslint-plugin-compat": "^4.2.0"
   }
 }
