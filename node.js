@@ -133,6 +133,7 @@ function mainThread() {
 
 function workerThread() {
 	let { mod, name, type } = threads.workerData;
+	if (!mod) return mainThread();
 
 	// turn global into a mock WorkerGlobalScope
 	const self = global.self = global;
