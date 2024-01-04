@@ -5,6 +5,7 @@
   "main": "./cjs/node.js",
   "browser": "./cjs/browser.js",
   "exports": {
+    "bun": "./cjs/browser.js",
     "browser": "./cjs/browser.js",
     "node": "./cjs/node.js",
     "default": "./cjs/node.js"
