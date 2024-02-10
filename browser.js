@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-export default Worker;
+export default typeof Worker !== 'undefined' ? Worker : undefined;
