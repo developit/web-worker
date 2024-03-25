@@ -2,36 +2,34 @@
   "name": "web-worker",
   "version": "1.3.0",
   "description": "Consistent Web Workers in browser and Node.",
-  "main": "./dist/node.cjs",
-  "browser": "./dist/browser.cjs",
-  "types": "./index.d.cts",
+  "main": "./dist/browser/index.cjs",
+  "browser": "./dist/browser/index.cjs",
+  "types": "./types/index.d.cts",
   "type": "module",
   "exports": {
     "import": {
-      "types": "./index.d.ts",
-      "bun": "./browser.js",
-      "browser": "./browser.js",
-      "default": "./node.js"
+      "types": "./types/index.d.ts",
+      "bun": "./src/browser/index.js",
+      "browser": "./src/browser/index.js",
+      "default": "./src/node/index.js"
     },
     "module": {
-      "types": "./index.d.ts",
-      "bun": "./browser.js",
-      "browser": "./browser.js",
-      "default": "./node.js"
+      "types": "./types/index.d.ts",
+      "bun": "./src/browser/index.js",
+      "browser": "./src/browser/index.js",
+      "default": "./src/node/index.js"
     },
     "default": {
-      "types": "./index.d.cts",
-      "bun": "./dist/browser.cjs",
-      "browser": "./dist/browser.cjs",
-      "default": "./dist/node.cjs"
+      "types": "./types/index.d.cts",
+      "bun": "./dist/browser/index.cjs",
+      "browser": "./dist/browser/index.cjs",
+      "default": "./dist/node/index.cjs"
     }
   },
   "files": [
     "dist",
-    "browser.js",
-    "node.js",
-    "index.d.ts",
-    "index.d.cts"
+    "src",
+    "types"
   ],
   "scripts": {
     "prepare": "tsup",
