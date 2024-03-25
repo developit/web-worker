@@ -5,7 +5,7 @@ export default defineConfig((options) => ({
   treeshake: false,
   splitting: false,
   entry: ['browser.js', 'node.js'],
-  format: ['cjs', 'esm'],
+  format: ['cjs'],
   dts: false,
   minify: false,
   clean: false,
