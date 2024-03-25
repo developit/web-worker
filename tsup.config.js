@@ -4,7 +4,7 @@ export default defineConfig((options) => ({
   target: 'es2020',
   treeshake: false,
   splitting: false,
-  entry: ['browser.js', 'node.js'],
+  entry: ['src/**/*.js'],
   format: ['cjs'],
   dts: false,
   minify: false,
