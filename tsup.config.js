@@ -9,5 +9,6 @@ export default defineConfig((options) => ({
   dts: false,
   minify: false,
   clean: false,
+  shims: true,
   ...options,
 }));
