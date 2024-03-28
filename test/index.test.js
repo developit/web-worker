@@ -15,7 +15,7 @@
  */
 
 import test from 'ava';
-import Worker from '..';
+import Worker from '../dist/node/index.cjs';
 
 let worker;
 
