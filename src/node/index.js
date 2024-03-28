@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import URL from 'url';
+import URL, { fileURLToPath } from 'node:url';
 import VM from 'vm';
 import threads from 'worker_threads';
 
@@ -101,7 +101,7 @@ function mainThread() {
 				mod = URL.fileURLToPath(new URL.URL(url, baseUrl));
 			}
 			const worker = new threads.Worker(
-				__filename,
+				fileURLToPath(import.meta.url),
 				{ workerData: { mod, name, type } }
 			);
 			Object.defineProperty(this, WORKER, {
