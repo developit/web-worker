@@ -28,7 +28,9 @@ class EventTarget {
 		});
 	}
 	dispatchEvent(event) {
-		event.target = event.currentTarget = this;
+		Object.defineProperty(event, 'target', { writable: false, value: this });
+		Object.defineProperty(event, 'currentTarget', { writable: false, value: this });
+
 		if (this['on'+event.type]) {
 			try {
 				this['on'+event.type](event);
