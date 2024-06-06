@@ -28,7 +28,6 @@ class EventTarget {
 		});
 	}
 	dispatchEvent(event) {
-		event.target = event.currentTarget = this;
 		if (this['on'+event.type]) {
 			try {
 				this['on'+event.type](event);
@@ -108,7 +107,7 @@ function mainThread() {
 				value: worker
 			});
 			worker.on('message', data => {
-				const event = new Event('message');
+				const event = new Event('message', this);
 				event.data = data;
 				this.dispatchEvent(event);
 			});
@@ -117,7 +116,7 @@ function mainThread() {
 				this.dispatchEvent(error);
 			});
 			worker.on('exit', () => {
-				this.dispatchEvent(new Event('close'));
+				this.dispatchEvent(new Event('close', this));
 			});
 		}
 		postMessage(data, transferList) {
@@ -146,7 +145,7 @@ function workerThread() {
 		buffered.forEach(event => { self.dispatchEvent(event); });
 	}
 	threads.parentPort.on('message', data => {
-		const event = new Event('message');
+		const event = new Event('message', this);
 		event.data = data;
 		if (q == null) self.dispatchEvent(event);
 		else q.push(event);
