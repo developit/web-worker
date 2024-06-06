@@ -28,6 +28,9 @@ class EventTarget {
 		});
 	}
 	dispatchEvent(event) {
+		Object.defineProperty(event, 'target', { writable: false, value: this });
+		Object.defineProperty(event, 'currentTarget', { writable: false, value: this });
+
 		if (this['on'+event.type]) {
 			try {
 				this['on'+event.type](event);
@@ -107,7 +110,7 @@ function mainThread() {
 				value: worker
 			});
 			worker.on('message', data => {
-				const event = new Event('message', this);
+				const event = new Event('message');
 				event.data = data;
 				this.dispatchEvent(event);
 			});
@@ -116,7 +119,7 @@ function mainThread() {
 				this.dispatchEvent(error);
 			});
 			worker.on('exit', () => {
-				this.dispatchEvent(new Event('close', this));
+				this.dispatchEvent(new Event('close'));
 			});
 		}
 		postMessage(data, transferList) {
@@ -145,7 +148,7 @@ function workerThread() {
 		buffered.forEach(event => { self.dispatchEvent(event); });
 	}
 	threads.parentPort.on('message', data => {
-		const event = new Event('message', this);
+		const event = new Event('message');
 		event.data = data;
 		if (q == null) self.dispatchEvent(event);
 		else q.push(event);
