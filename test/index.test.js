@@ -19,8 +19,8 @@ import Worker from '../dist/node/index.cjs';
 
 let worker;
 
-function createModuleWorker(url) {
-	const worker = new Worker(url, { type: 'module' });
+function createModuleWorker(url, opts) {
+	const worker = new Worker(url, opts || { type: 'module' });
 	worker.events = [];
 	worker.addEventListener('message', e => {
 		worker.events.push(e);
@@ -36,7 +36,7 @@ test.after.always(t => {
 
 test.serial('instantiation', async t => {
 	worker = createModuleWorker('./test/fixtures/worker.mjs');
-	await sleep(500);
+	await sleep(50);
 	t.is(worker.events.length, 1, 'should have received a message event');
 	t.is(worker.events[0].data, 42);
 });
@@ -49,7 +49,7 @@ test.serial('postMessage', async t => {
 	worker.postMessage(msg);
 	const timestamp = Date.now();
 
-	await sleep(500);
+	await sleep(50);
 
 	t.is(worker.events.length, 2, 'should have received two message responses');
 
@@ -74,4 +74,20 @@ test.serial('close', async t => {
 		setTimeout(reject, 500);
 	});
 	t.is(closed, true, 'should have closed itself');
+});
+
+test.serial('data URL - module', async t => {
+	t.teardown(() => worker && worker.terminate());
+	const worker = createModuleWorker('data:application/javascript,postMessage(42)');
+	await sleep(50);
+	t.is(worker.events.length, 1, 'should have received a message event');
+	t.is(worker.events[0].data, 42);
+});
+
+test.serial('data URL - classic', async t => {
+	t.teardown(() => worker && worker.terminate());
+	const worker = createModuleWorker('data:application/javascript,postMessage(42)', {});
+	await sleep(50);
+	t.is(worker.events.length, 1, 'should have received a message event');
+	t.is(worker.events[0].data, 42);
 });
