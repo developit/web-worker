@@ -191,6 +191,7 @@ function workerThread() {
 		proto[fn] = proto[fn].bind(global);
 	});
 	global.name = name;
+	global.WorkerGlobalScope = WorkerGlobalScope;
 
 	const isDataUrl = /^data:/.test(mod);
 	if (type === 'module') {
