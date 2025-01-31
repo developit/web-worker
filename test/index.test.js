@@ -41,22 +41,6 @@ test.serial('instantiation', async t => {
 	t.is(worker.events[0].data, 42);
 });
 
-test('data URL - module', async t => {
-	const worker = createModuleWorker('data:,postMessage(42)');
-	t.teardown(worker.terminate.bind(worker));
-	await sleep(50);
-	t.is(worker.events.length, 1, 'should have received a message event');
-	t.is(worker.events[0].data, 42);
-});
-
-test('data URL - classic', async t => {
-	const worker = createModuleWorker('data:,postMessage(42)', {});
-	t.teardown(worker.terminate.bind(worker));
-	await sleep(50);
-	t.is(worker.events.length, 1, 'should have received a message event');
-	t.is(worker.events[0].data, 42);
-});
-
 test.serial('postMessage', async t => {
 	// reset events list
 	worker.events.length = 0;
@@ -90,4 +74,20 @@ test.serial('close', async t => {
 		setTimeout(reject, 500);
 	});
 	t.is(closed, true, 'should have closed itself');
+});
+
+test.serial('data URL - module', async t => {
+	t.teardown(() => worker && worker.terminate());
+	const worker = createModuleWorker('data:,postMessage(42)');
+	await sleep(50);
+	t.is(worker.events.length, 1, 'should have received a message event');
+	t.is(worker.events[0].data, 42);
+});
+
+test.serial('data URL - classic', async t => {
+	t.teardown(() => worker && worker.terminate());
+	const worker = createModuleWorker('data:,postMessage(42)', {});
+	await sleep(50);
+	t.is(worker.events.length, 1, 'should have received a message event');
+	t.is(worker.events[0].data, 42);
 });
