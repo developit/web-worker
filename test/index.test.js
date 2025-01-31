@@ -42,14 +42,14 @@ test.serial('instantiation', async t => {
 });
 
 test.serial('data URL - module', async t => {
-	worker = createModuleWorker('data:,postMessage({data:42})');
+	worker = createModuleWorker('data:,postMessage(42)');
 	await sleep(500);
 	t.is(worker.events.length, 1, 'should have received a message event');
 	t.is(worker.events[0].data, 42);
 });
 
 test.serial('data URL - classic', async t => {
-	worker = createModuleWorker('data:,postMessage({data:42})', {});
+	worker = createModuleWorker('data:,postMessage(42)', {});
 	await sleep(500);
 	t.is(worker.events.length, 1, 'should have received a message event');
 	t.is(worker.events[0].data, 42);
