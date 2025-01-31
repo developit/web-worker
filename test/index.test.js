@@ -19,8 +19,8 @@ import Worker from '../dist/node/index.cjs';
 
 let worker;
 
-function createModuleWorker(url) {
-	const worker = new Worker(url, { type: 'module' });
+function createModuleWorker(url, opts) {
+	const worker = new Worker(url, opts || { type: 'module' });
 	worker.events = [];
 	worker.addEventListener('message', e => {
 		worker.events.push(e);
@@ -36,6 +36,20 @@ test.after.always(t => {
 
 test.serial('instantiation', async t => {
 	worker = createModuleWorker('./test/fixtures/worker.mjs');
+	await sleep(500);
+	t.is(worker.events.length, 1, 'should have received a message event');
+	t.is(worker.events[0].data, 42);
+});
+
+test.serial('data URL - module', async t => {
+	worker = createModuleWorker('data:,postMessage({data:42})');
+	await sleep(500);
+	t.is(worker.events.length, 1, 'should have received a message event');
+	t.is(worker.events[0].data, 42);
+});
+
+test.serial('data URL - classic', async t => {
+	worker = createModuleWorker('data:,postMessage({data:42})', {});
 	await sleep(500);
 	t.is(worker.events.length, 1, 'should have received a message event');
 	t.is(worker.events[0].data, 42);
