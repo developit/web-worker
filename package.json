@@ -54,7 +54,7 @@
     }
   },
   "devDependencies": {
-    "ava": "2.4",
+    "ava": "^6.2.0",
     "eslint": "^7.32.0",
     "eslint-config-developit": "^1.2.0",
     "eslint-plugin-compat": "^4.2.0",
