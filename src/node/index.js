@@ -72,7 +72,7 @@ function Event(type, target) {
 
 // this module is used self-referentially on both sides of the
 // thread boundary, but behaves differently in each context.
-export default threads.isMainThread ? mainThread() : workerThread();
+export default typeof Worker === 'function' ? Worker : threads.isMainThread ? mainThread() : workerThread();
 
 const baseUrl = pathToFileURL(process.cwd() + '/');
 
@@ -134,6 +134,10 @@ function mainThread() {
 }
 
 function workerThread() {
+	// loaded in a real Web Worker (eg: on Electron)
+	if (typeof global.WorkerGlobalScope === 'function') {
+		return;
+	}
 	let { mod, name, type } = threads.workerData;
 	if (!mod) return mainThread();
 
