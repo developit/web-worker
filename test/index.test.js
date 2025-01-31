@@ -42,16 +42,16 @@ test.serial('instantiation', async t => {
 });
 
 test('data URL - module', async t => {
-	t.teardown(() => worker && worker.terminate());
 	const worker = createModuleWorker('data:,postMessage(42)');
+	t.teardown(worker.terminate.bind(worker));
 	await sleep(50);
 	t.is(worker.events.length, 1, 'should have received a message event');
 	t.is(worker.events[0].data, 42);
 });
 
 test('data URL - classic', async t => {
-	t.teardown(() => worker && worker.terminate());
 	const worker = createModuleWorker('data:,postMessage(42)', {});
+	t.teardown(worker.terminate.bind(worker));
 	await sleep(50);
 	t.is(worker.events.length, 1, 'should have received a message event');
 	t.is(worker.events[0].data, 42);
