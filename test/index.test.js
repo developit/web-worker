@@ -78,7 +78,7 @@ test.serial('close', async t => {
 
 test.serial('data URL - module', async t => {
 	t.teardown(() => worker && worker.terminate());
-	const worker = createModuleWorker('data:,postMessage(42)');
+	const worker = createModuleWorker('data:application/javascript,postMessage(42)');
 	await sleep(50);
 	t.is(worker.events.length, 1, 'should have received a message event');
 	t.is(worker.events[0].data, 42);
@@ -86,7 +86,7 @@ test.serial('data URL - module', async t => {
 
 test.serial('data URL - classic', async t => {
 	t.teardown(() => worker && worker.terminate());
-	const worker = createModuleWorker('data:,postMessage(42)', {});
+	const worker = createModuleWorker('data:application/javascript,postMessage(42)', {});
 	await sleep(50);
 	t.is(worker.events.length, 1, 'should have received a message event');
 	t.is(worker.events[0].data, 42);
