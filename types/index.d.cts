@@ -1,4 +1,4 @@
-type ConstructorOf<C> = { new (...args: any[]): C }
+type ConstructorOf<C> = { new (...args: any[]): C };
 
-declare const _default: ConstructorOf<Worker>
-export default _default
+declare const _default: ConstructorOf<Worker>;
+export default _default;
