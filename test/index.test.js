@@ -52,7 +52,7 @@ test.serial('postMessage', async t => {
 	await sleep(500);
 
 	t.is(worker.events.length, 2, 'should have received two message responses');
-	
+
 	const first = worker.events[0];
 	t.is(first.data[0], 'received onmessage');
 	t.assert(Math.abs(timestamp - first.data[1]) < 500);
