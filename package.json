@@ -1,6 +1,6 @@
 {
   "name": "web-worker",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Consistent Web Workers in browser and Node.",
   "main": "./dist/browser/index.cjs",
   "browser": "./dist/browser/index.cjs",
