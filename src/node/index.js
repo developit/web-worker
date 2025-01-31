@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import URL, { fileURLToPath } from 'url';
+import { URL, fileURLToPath, pathToFileURL } from 'url';
+import path from 'path';
 import fs from 'fs';
 import VM from 'vm';
 import threads from 'worker_threads';
@@ -73,7 +74,7 @@ function Event(type, target) {
 // thread boundary, but behaves differently in each context.
 export default threads.isMainThread ? mainThread() : workerThread();
 
-const baseUrl = URL.pathToFileURL(process.cwd() + '/');
+const baseUrl = pathToFileURL(process.cwd() + '/');
 
 function mainThread() {
 
@@ -99,7 +100,7 @@ function mainThread() {
 				mod = url;
 			}
 			else {
-				mod = URL.fileURLToPath(new URL.URL(url, baseUrl));
+				mod = fileURLToPath(new URL(url, baseUrl));
 			}
 			const worker = new threads.Worker(
 				fileURLToPath(import.meta.url),
@@ -165,6 +166,22 @@ function workerThread() {
 		close() {
 			process.exit();
 		}
+		importScripts() {
+			for (let i = 0; i < arguments.length; i++) {
+				const url = arguments[i];
+				let code;
+				if (/^data:/.test(url)) {
+					code = parseDataUrl(url).data;
+				}
+				else {
+					code = fs.readFileSync(
+						new URL(path.posix.normalize(url), pathToFileURL(mod)),
+						'utf-8'
+					);
+				}
+				VM.runInThisContext(code, { filename: url });
+			}
+		}
 	}
 	let proto = Object.getPrototypeOf(global);
 	delete proto.constructor;
@@ -177,7 +194,7 @@ function workerThread() {
 
 	const isDataUrl = /^data:/.test(mod);
 	if (type === 'module') {
-		import(isDataUrl ? mod : URL.pathToFileURL(mod))
+		import(isDataUrl ? mod : pathToFileURL(mod))
 			.catch(err => {
 				if (isDataUrl && err.message === 'Not supported') {
 					console.warn('Worker(): Importing data: URLs requires Node 12.10+. Falling back to classic worker.');
@@ -193,7 +210,7 @@ function workerThread() {
 				evaluateDataUrl(mod, name);
 			}
 			else {
-				importScripts(mod);
+				global.importScripts(mod);
 			}
 		}
 		catch (err) {
@@ -221,18 +238,4 @@ function parseDataUrl(url) {
 			throw Error('Unknown Data URL encoding "' + encoding + '"');
 	}
 	return { type, data };
-}
-
-function importScripts() {
-	for (let i = 0; i < arguments.length; i++) {
-		const url = arguments[i];
-		let code;
-		if (/^data:/.test(url)) {
-			code = parseDataUrl(url).data;
-		}
-		else {
-			code = fs.readFileSync(url, 'utf-8');
-		}
-		VM.runInThisContext(code, { filename: url });
-	}
 }

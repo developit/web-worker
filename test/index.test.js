@@ -91,3 +91,12 @@ test.serial('data URL - classic', async t => {
 	t.is(worker.events.length, 1, 'should have received a message event');
 	t.is(worker.events[0].data, 42);
 });
+
+test.serial('importScripts', async t => {
+	t.teardown(() => worker && worker.terminate());
+	const worker = createModuleWorker('./test/fixtures/importscripts.cjs', {});
+	await sleep(500);
+	t.is(worker.events.length, 2, 'should have received two message events');
+	t.is(worker.events[0].data, 'from importscripts-2.cjs');
+	t.is(worker.events[1].data, 'from data url');
+});
