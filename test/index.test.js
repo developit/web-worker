@@ -36,7 +36,7 @@ test.after.always(t => {
 
 test.serial('instantiation', async t => {
 	worker = createModuleWorker('./test/fixtures/worker.mjs');
-	await sleep(50);
+	await sleep(500);
 	t.is(worker.events.length, 1, 'should have received a message event');
 	t.is(worker.events[0].data, 42);
 });
@@ -49,7 +49,7 @@ test.serial('postMessage', async t => {
 	worker.postMessage(msg);
 	const timestamp = Date.now();
 
-	await sleep(50);
+	await sleep(500);
 
 	t.is(worker.events.length, 2, 'should have received two message responses');
 
@@ -79,7 +79,7 @@ test.serial('close', async t => {
 test.serial('data URL - module', async t => {
 	t.teardown(() => worker && worker.terminate());
 	const worker = createModuleWorker('data:application/javascript,postMessage(42)');
-	await sleep(50);
+	await sleep(500);
 	t.is(worker.events.length, 1, 'should have received a message event');
 	t.is(worker.events[0].data, 42);
 });
@@ -87,7 +87,7 @@ test.serial('data URL - module', async t => {
 test.serial('data URL - classic', async t => {
 	t.teardown(() => worker && worker.terminate());
 	const worker = createModuleWorker('data:application/javascript,postMessage(42)', {});
-	await sleep(50);
+	await sleep(500);
 	t.is(worker.events.length, 1, 'should have received a message event');
 	t.is(worker.events[0].data, 42);
 });
