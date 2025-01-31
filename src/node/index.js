@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import URL, { fileURLToPath } from 'node:url';
+import URL, { fileURLToPath } from 'url';
+import fs from 'fs';
 import VM from 'vm';
 import threads from 'worker_threads';
 
@@ -192,7 +193,7 @@ function workerThread() {
 				evaluateDataUrl(mod, name);
 			}
 			else {
-				require(mod);
+				importScripts(mod);
 			}
 		}
 		catch (err) {
@@ -220,4 +221,18 @@ function parseDataUrl(url) {
 			throw Error('Unknown Data URL encoding "' + encoding + '"');
 	}
 	return { type, data };
+}
+
+function importScripts() {
+	for (let i = 0; i < arguments.length; i++) {
+		const url = arguments[i];
+		let code;
+		if (/^data:/.test(url)) {
+			code = parseDataUrl(url).data;
+		}
+		else {
+			code = fs.readFileSync(url, 'utf-8');
+		}
+		VM.runInThisContext(code, { filename: url });
+	}
 }
